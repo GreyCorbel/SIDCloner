@@ -3,25 +3,21 @@ Demonstrates how to populate SID History on security principals migrated cross A
 
 We routinely use this library in our migration projects as it can be easily integrated into PowerShell migration scripts and other toolset we develop and deliver to customers as part of migration projects.
 
-PowerShell sample below is modified real-life script that migrated SID history for 10K users in one session. It demonstrates various methods provided by SIDCloner class. Format of input CSV file is shown in identities.csv - see source code
+PowerShell sample below is modified real-life script that migrated SID history for 10K users in one session. It demonstrates various methods provided by SIDCloner class.
 
 ```Powershell
 param( 
-    [parameter(Mandatory = $false)] 
-    [String]$inFile 
+    [parameter(Mandatory = $true)] 
+    [String]$inFile,
+    [parameter(Mandatory = $true)] 
+    [String]$targetDomain,
+    
     ) 
          
 $errorPreference='Continue' 
  
-#constants 
-$targetDomain="target.test.cz" 
- 
 $cwd=(Get-Item .).FullName 
 [System.Reflection.Assembly]::LoadFile("$cwd\SIDCloner.dll") | Out-Null 
- 
-#process parameters 
-#customize file/folder names 
-if([String]::IsNullOrEmpty($inFile)) { $inFile = ".\Data\identities.csv" } 
  
 #clear the log file 
 if([System.IO.File]::Exists(".\Log\CloneFailed.csv")) { 
@@ -38,7 +34,7 @@ foreach($record in $data) {
         Write-Progress -Activity "Cloning users" -PercentComplete $percentComplete -CurrentOperation "Processing user: $($record.sourceDomain)\$($record.sourceSAMAccountName)" -Status "Completed: $percentComplete`%" 
  
         #uses credentials of logged-on user (or credentials stored in Credentials Manager); works against PDC in both domains 
-        [wintools.sidcloner]::CloneSid( 
+        [greycorbel.sidcloner]::CloneSid( 
             $record.sourceSAMAccountName, 
             $record.sourceDomain, 
             $record.targetSAMAccountName, 
@@ -63,7 +59,7 @@ foreach($record in $data) {
         $percentComplete=[System.Convert]::ToInt32($i/($data.count)*100) 
         Write-Progress -Activity "Cloning users" -PercentComplete $percentComplete -CurrentOperation "Processing user: $($record.sourceDomain)\$($record.sourceSAMAccountName)" -Status "Completed: $percentComplete`%" 
  
-        [wintools.sidcloner]::CloneSid( 
+        [greycorbel.sidcloner]::CloneSid( 
             $record.sourceSAMAccountName, 
             $record.sourceDomain, 
             $sourceDC, 
@@ -91,7 +87,7 @@ foreach($record in $data) {
         $percentComplete=[System.Convert]::ToInt32($i/($data.count)*100) 
         Write-Progress -Activity "Cloning users" -PercentComplete $percentComplete -CurrentOperation "Processing user: $($record.sourceDomain)\$($record.sourceSAMAccountName)" -Status "Completed: $percentComplete`%" 
  
-        [wintools.sidcloner]::CloneSid( 
+        [greycorbel.sidcloner]::CloneSid( 
             $record.sourceSAMAccountName, 
             $record.sourceDomain, 
             $sourceDC, 
