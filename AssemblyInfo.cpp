@@ -16,7 +16,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("")];
 [assembly:AssemblyProductAttribute("SIDCloner")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c)  2016 - 2019 Jiri Formacek, GreyCorbel Solutions")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c)  2016 - 2209 Jiri Formacek, GreyCorbel Solutions")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
