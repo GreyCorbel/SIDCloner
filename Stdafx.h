@@ -10,3 +10,4 @@
 #include <Security.h>
 #include <Ntdsapi.h>
 #include <vcclr.h>
+#include <msclr\marshal_windows.h>
