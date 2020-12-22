@@ -1,11 +1,14 @@
 # SIDCloner
 Demonstrates how to populate SID History on security principals migrated cross AD forest.
 
-We routinely use this library in our migration projects as it can be easily integrated into PowerShell migration scripts and other toolset we develop and deliver to customers as part of migration projects.
+We routinely use this library in our migration projects as it can be easily integrated into PowerShell migration scripts and other toolset we develop and deliver to customers as a part of migration projects.
 
-PowerShell sample below is modified real-life script that migrated SID history for 10K users in one session. It demonstrates various methods provided by SIDCloner class.
+PowerShell sample below is modified real-life script that migrated SID history for 10K users in one session. Sample demonstrates various methods provided by SIDCloner class - both stateless implementation via static methods and stateful instance methods following pattern Create -> Initialize -> Use.
 
-```Powershell
+We added instance methods for better performance, however testing has shown so far that peformance gain is smaller than expected - static methods are slower by less than 1%. Interested to hear from others - obviously there is a lot of optimization/caching on OS side as well.  
+
+
+```powershell
 param( 
     [parameter(Mandatory = $true)] 
     [String]$inFile,
@@ -44,7 +47,7 @@ foreach($record in $data) {
         Write-Host "Account $($record.sourceDomain)\$($record.sourceSAMAccountName) cloned" 
     } 
     catch { 
-        Write-Warning -message:"Account $($record.sourceDomain)\$($record.sourceSAMAccountName) failed to clone`n`tError:$($($_.Exception).Message)" 
+        Write-Warning -message:"Account $($record.sourceDomain)\$($record.sourceSAMAccountName) failed to clone`n`tError:$($_.Exception.Message)" 
         "$($record.sourceSAMAccountName),$($record.sourceDomain),$($record.targetSAMAccountName)" >> ".\Log\CloneFailed.csv" 
     } 
 } 
@@ -77,34 +80,28 @@ foreach($record in $data) {
     } 
 } 
  
-#explicit DC and credentials for both domains 
+#explicit DC and credentials for both domains
+#we use instance methods rather than static methods now
 $targetCredential=Get-Credential 
 $targetDC=Get-DC -domain:$targetDomain    #not implemented here 
 $i=-1 
+$cloner = new-object GreyCorbel.SidCloner
+$cloner.Initialize($sourceDomain, $targetDomain,$sourceDc, $targetDc, $sourceCredential, $targetCredential)
 foreach($record in $data) { 
     try { 
         $i++ 
         $percentComplete=[System.Convert]::ToInt32($i/($data.count)*100) 
-        Write-Progress -Activity "Cloning users" -PercentComplete $percentComplete -CurrentOperation "Processing user: $($record.sourceDomain)\$($record.sourceSAMAccountName)" -Status "Completed: $percentComplete`%" 
+        Write-Progress -Activity "Cloning users" -PercentComplete $percentComplete -CurrentOperation "Processing user: $sourceDomain`\$($record.sourceSAMAccountName)" -Status "Completed: $percentComplete`%" 
  
-        [greycorbel.sidcloner]::CloneSid( 
+        $cloner.CloneSid( 
             $record.sourceSAMAccountName, 
-            $record.sourceDomain, 
-            $sourceDC, 
-            $sourceCredential.UserName, 
-            $sourceCredential.Password, 
             $record.targetSAMAccountName, 
-            $targetDomain, 
-            $targetDC, 
-            $targetCredential.UserName, 
-            $targetCredential.Password 
         ) 
- 
-        Write-Host "Account $($record.sourceDomain)\$($record.sourceSAMAccountName) cloned" 
+        Write-Host "Account $sourceDomain`\$($record.sourceSAMAccountName) cloned" 
     } 
     catch { 
-        Write-Warning -message:"Account $($record.sourceDomain)\$($record.sourceSAMAccountName) failed to clone`n`tError:$($($_.Exception).Message)" 
-        "$($record.sourceSAMAccountName),$($record.sourceDomain),$($record.targetSAMAccountName)" >> ".\Log\CloneFailed.csv" 
+        Write-Warning -message:"Account $sourceDomain`\$($record.sourceSAMAccountName) failed to clone`n`tError:$($_.Exception.Message)" 
+        "$($record.sourceSAMAccountName),$sourceDomain,$($record.targetSAMAccountName)" >> ".\Log\CloneFailed.csv" 
     } 
 } 
  
