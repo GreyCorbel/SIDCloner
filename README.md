@@ -3,6 +3,19 @@ Demonstrates how to populate SID History on security principals migrated cross A
 
 We routinely use this library in our migration projects as it can be easily integrated into PowerShell migration scripts and other toolset we develop and deliver to customers as a part of migration projects.
 
+PowerShell sample below demostrates how easy it is to clone SID on many principals. Format of input file is showcased in inputFile.csv in this repo.
+
+
+```powershell
+Import-Module SidCloner
+$sourceCred=Get-Credential
+$targetCred=Get-Credential
+
+Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred
+```
+
+Assembly can also be used directly - provided static and instance methods for SID cloning.
+
 PowerShell sample below is modified real-life script that migrated SID history for 10K users in one session. Sample demonstrates various methods provided by SIDCloner class - both stateless implementation via static methods and stateful instance methods following pattern Create -> Initialize -> Use.
 
 We added instance methods for better performance, however testing has shown so far that peformance gain is smaller than expected - static methods are slower by less than 1%. Interested to hear from others - obviously there is a lot of optimization/caching on OS side as well.  
