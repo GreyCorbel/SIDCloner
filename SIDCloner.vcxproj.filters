@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Formats">
+      <UniqueIdentifier>{2458fff8-79a8-45d4-b682-50323d2b6914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Help">
+      <UniqueIdentifier>{4647b122-9bbb-40ea-a636-97c6e7d48d64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SIDCloner.h">
@@ -53,11 +59,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="SidCloner.psd1" />
-    <None Include="SidCloner.formats.ps1xml" />
+    <None Include="SidCloner.formats.ps1xml">
+      <Filter>Formats</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="SidCloner.dll-Help.xml">
+      <Filter>Help</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

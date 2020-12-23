@@ -136,6 +136,17 @@
       <AdditionalDependencies>Advapi32.lib;secur32.lib;Ntdsapi.lib</AdditionalDependencies>
     </Link>
     <Xdcmake />
+    <PostBuildEvent>
+      <Command>copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Module\SidCloner\"
+copy /y "$(ProjectDir)SidCloner.psd1" "$(SolutionDir)Module\SidCloner\"
+copy /y "$(ProjectDir)SidCloner.formats.ps1xml" "$(SolutionDir)Module\SidCloner\"
+copy /y "$(ProjectDir)SidCloner.dll-Help.xml" "$(SolutionDir)Module\SidCloner\en-us"
+
+if exist C:\TFS\DigiCertUtil.exe (
+        C:\TFS\DigiCertUtil.exe sign /noinput "$(SolutionDir)Module\SidCloner\$(TargetFileName)"
+        C:\TFS\DigiCertUtil.exe sign /noinput ""$(SolutionDir)Module\SidCloner\AdmPwd.PS.format.ps1xml"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -172,6 +183,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="SidCloner.dll-Help.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
