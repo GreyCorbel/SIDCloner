@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include "CloneResult.h"
 #include "SidCloner.h"
 #include "DsHelper.h"
 #include "CredentialHelper.h"

@@ -30,6 +30,9 @@
     <ClInclude Include="CredentialHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CloneResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -49,6 +52,8 @@
     <None Include="app.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="SidCloner.psd1" />
+    <None Include="SidCloner.formats.ps1xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">

@@ -140,12 +140,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Management.Automation">
       <HintPath>..\..\..\Windows\assembly\GAC_MSIL\System.Management.Automation\1.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CloneResult.h" />
     <ClInclude Include="CredentialHelper.h" />
     <ClInclude Include="DsHelper.h" />
     <ClInclude Include="resource.h" />
@@ -165,6 +167,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />
+    <None Include="SidCloner.formats.ps1xml" />
+    <None Include="SidCloner.psd1" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
