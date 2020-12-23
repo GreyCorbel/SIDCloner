@@ -340,7 +340,7 @@
         $sourceCred=Get-Credential
         $targetCred=Get-Credential
 
-        Import-Csv inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred
+        Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred
       </dev:code>
       <dev:remarks>
         <maml:para>
