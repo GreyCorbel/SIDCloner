@@ -1,7 +1,7 @@
 # SIDCloner
 Demonstrates how to populate SID History on security principals migrated cross AD forest.
 
-Module is available on [PowerShell Gallery](https://www.powershellgallery.com/packages/SidCloner/2.1.0-beta1).
+Module is available on [PowerShell Gallery](https://www.powershellgallery.com/packages/SidCloner).
 As the code is developed in C++, installation of [Visual C++ Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) is required for its use (C++/CLI projects cannot be compiled to statically link with C++ runtime).
 Module is available for amd64 platform only - I did not see any strong need for other HW platofrms. Let me know if you need it for diferent platform.
 
