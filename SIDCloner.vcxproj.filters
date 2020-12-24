@@ -62,6 +62,12 @@
     <None Include="SidCloner.formats.ps1xml">
       <Filter>Formats</Filter>
     </None>
+    <None Include="Help\Copy-Sid.md">
+      <Filter>Help</Filter>
+    </None>
+    <None Include="Help\sidcloner.md">
+      <Filter>Help</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -69,7 +75,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="SidCloner.dll-Help.xml">
+    <Xml Include="Help\SidCloner.dll-Help.xml">
       <Filter>Help</Filter>
     </Xml>
   </ItemGroup>

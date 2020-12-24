@@ -10,35 +10,62 @@ using namespace System::Management::Automation;
 
 namespace GreyCorbel {
 #pragma region Cmdlet
+	
 	[CmdletAttribute("Copy", "Sid")]
+	/// <summary>
+	/// <para> Command copies SID from SourcePrincipal in SourceDomain to SID History of TargetPrincipal in TargetDomain.</para>
+	/// <para>Command uses explicit domain controllers in Source or Target domain, or discovers suiteble Domain Controllers itself, if not specified</para>
+	/// <para>Command uses explicit credentials to authorize the operation, if provided, or identity of caller, if explicit credentials not provided</para>
+	/// </summary>
 	public ref class SidCloner:public PSCmdlet
 	{
 	public:
-		[Parameter(Mandatory = true, ValueFromPipeline = true, ParameterSetName = "MappingObject")]
-		property PSObject^ Identities;
-
-		[Parameter(Mandatory = true, ParameterSetName = "SeparateNames")]
+		[Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true, Position = 0, )]
+		/// <summary>
+		/// sAMAccountName of principal to copy the SID from.
+		/// </summary>
 		property String^ SourcePrincipal;
 
-		[Parameter(Mandatory = true, ParameterSetName = "SeparateNames")]
+		[Parameter(Mandatory = true, ValueFromPipelineByPropertyName = true, Position = 1 )]
+		/// <summary>
+		/// sAMAccountName of principal that receives SID to its SID History from SourcePrincipal
+		/// </summary>
 		property String^ TargetPrincipal;
 
-		[Parameter(Position = 0, Mandatory = true)]
+		[Parameter(Position = 2, Mandatory = true)]
+		/// <summary>
+		/// DNS name of domain hosting SourcePrincipal
+		/// </summary>
 		property String^ SourceDomain;
 
-		[Parameter(Position = 1, Mandatory = true)]
+		[Parameter(Position = 3, Mandatory = true)]
+		/// <summary>
+		/// DNS name of domain hosting TargetPrincipal
+		/// </summary>
 		property String^ TargetDomain;
 
-		[Parameter(Position = 2 )]
+		[Parameter(Position = 4 )]
+		/// <summary>
+		/// FQDN of Domain Controller in SourceDomain that will be used by the operation
+		/// </summary>
 		property String^ SourceDC;
 
-		[Parameter(Position = 3 )]
+		[Parameter(Position = 5 )]
+		/// <summary>
+		/// FQDN of Domain Controller in TargetDomain that will be used by the operation
+		/// </summary>
 		property String^ TargetDC;
 
-		[Parameter(Position = 4)]
+		[Parameter(Position = 6)]
+		/// <summary>
+		/// Explicit credentials to authorize operation is SourceDomain
+		/// </summary>
 		property PSCredential^ SourceCredential;
 
-		[Parameter(Position = 5)]
+		[Parameter(Position = 7)]
+		/// <summary>
+		/// Explicit credentials to authorize operation is TargetDomain
+		/// </summary>
 		property PSCredential^ TargetCredential;
 
 	public:
@@ -49,18 +76,8 @@ namespace GreyCorbel {
 
 		virtual void ProcessRecord() override
 		{
-			if (this->ParameterSetName == "MappingObject")
-			{
-				for each (auto prop in Identities->Properties)
-				{
-					if (prop->Name->Equals("SourcePrincipal", StringComparison::CurrentCultureIgnoreCase))
-						SourcePrincipal = dynamic_cast<String^>(prop->Value);
-					if (prop->Name->Equals("TargetPrincipal", StringComparison::CurrentCultureIgnoreCase))
-						TargetPrincipal = dynamic_cast<String^>(prop->Value);
-				}
-				if (String::IsNullOrWhiteSpace(SourcePrincipal) || String::IsNullOrWhiteSpace(TargetPrincipal))
-					throw gcnew System::ArgumentException("Identities parameter must contain SourcePrincipal and TargetPrincipal properties.");
-			}
+			if (String::IsNullOrWhiteSpace(SourcePrincipal) || String::IsNullOrWhiteSpace(TargetPrincipal))
+				throw gcnew System::ArgumentException("Identities parameter must contain SourcePrincipal and TargetPrincipal properties.");
 
 			CloneResult^ result = gcnew CloneResult();
 			result->SourcePrincipal = SourcePrincipal;

@@ -137,11 +137,17 @@
     </Link>
     <Xdcmake />
     <PostBuildEvent>
-      <Command>copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Module\SidCloner\"
+      <Command>rem This requires PlatyPS module
+pwsh -c "&amp; {New-ExternalHelp -Path '$(ProjectDir)Help' -OutputPath '$(ProjectDir)Help' -Force}"
+
+rem copy files to output
+copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)Module\SidCloner\"
+copy /y "$(TargetDir)$(TargetName).xml" "$(SolutionDir)Module\SidCloner\"
 copy /y "$(ProjectDir)SidCloner.psd1" "$(SolutionDir)Module\SidCloner\"
 copy /y "$(ProjectDir)SidCloner.formats.ps1xml" "$(SolutionDir)Module\SidCloner\"
-copy /y "$(ProjectDir)SidCloner.dll-Help.xml" "$(SolutionDir)Module\SidCloner\en-us"
+copy /y "$(ProjectDir)Help\SidCloner.dll-Help.xml" "$(SolutionDir)Module\SidCloner\en-us"
 
+rem sign files
 if exist C:\TFS\DigiCertUtil.exe (
         C:\TFS\DigiCertUtil.exe sign /noinput "$(SolutionDir)Module\SidCloner\$(TargetFileName)"
         C:\TFS\DigiCertUtil.exe sign /noinput ""$(SolutionDir)Module\SidCloner\AdmPwd.PS.format.ps1xml"
@@ -178,6 +184,8 @@ if exist C:\TFS\DigiCertUtil.exe (
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />
+    <None Include="Help\Copy-Sid.md" />
+    <None Include="Help\sidcloner.md" />
     <None Include="SidCloner.formats.ps1xml" />
     <None Include="SidCloner.psd1" />
   </ItemGroup>
@@ -185,7 +193,7 @@ if exist C:\TFS\DigiCertUtil.exe (
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="SidCloner.dll-Help.xml" />
+    <Xml Include="Help\SidCloner.dll-Help.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
