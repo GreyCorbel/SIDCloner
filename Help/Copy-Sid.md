@@ -12,7 +12,7 @@ Command copies SID from SourcePrincipal in SourceDomain to SID History of Target
 
 ## SYNTAX
 
-```
+```powershell
 Copy-Sid [-SourcePrincipal] <String> [-TargetPrincipal] <String> [-SourceDomain] <String> [-TargetDomain] <String> [[-SourceDC] <String>] [[-TargetDC] <String>] [[-SourceCredential] <PSCredential>] [[-TargetCredential] <PSCredential>] [<CommonParameters>]
  
 ```
@@ -26,12 +26,10 @@ Command uses explicit credentials to authorize the operation, if provided, or id
 
 ### Example 1
 ```powershell
-PS C:\> 
 $sourceCred=Get-Credential
 $targetCred=Get-Credential
 
 Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred
-
 ```
 
 Clones SIDs of accounts in inputFile.csv from domain1.com to accounts in domain2.com. Input file is CSV that needs to have 2 mandatory columns: SourcePrincipal and TargetPrincipal. CSV can contain additional columns as needed.
@@ -69,7 +67,7 @@ Accept wildcard characters: False
 ```
 
 ### -SourceDomain
-DNS name of domain hosting SourcePrincipal
+DNS name of AD domain hosting SourcePrincipal
 
 ```yaml
 Type: System.String
@@ -129,7 +127,7 @@ Accept wildcard characters: False
 ```
 
 ### -TargetDomain
-DNS name of domain hosting TargetPrincipal
+DNS name of AD domain hosting TargetPrincipal
 
 ```yaml
 Type: System.String

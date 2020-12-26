@@ -34,13 +34,13 @@ namespace GreyCorbel {
 
 		[Parameter(Position = 2, Mandatory = true)]
 		/// <summary>
-		/// DNS name of domain hosting SourcePrincipal
+		/// DNS name of AD domain hosting SourcePrincipal
 		/// </summary>
 		property String^ SourceDomain;
 
 		[Parameter(Position = 3, Mandatory = true)]
 		/// <summary>
-		/// DNS name of domain hosting TargetPrincipal
+		/// DNS name of AD domain hosting TargetPrincipal
 		/// </summary>
 		property String^ TargetDomain;
 
@@ -58,13 +58,13 @@ namespace GreyCorbel {
 
 		[Parameter(Position = 6)]
 		/// <summary>
-		/// Explicit credentials to authorize operation is SourceDomain
+		/// Explicit credentials to authorize operation in SourceDomain
 		/// </summary>
 		property PSCredential^ SourceCredential;
 
 		[Parameter(Position = 7)]
 		/// <summary>
-		/// Explicit credentials to authorize operation is TargetDomain
+		/// Explicit credentials to authorize operation in TargetDomain
 		/// </summary>
 		property PSCredential^ TargetCredential;
 
@@ -76,17 +76,10 @@ namespace GreyCorbel {
 
 		virtual void ProcessRecord() override
 		{
-			if (String::IsNullOrWhiteSpace(SourcePrincipal) || String::IsNullOrWhiteSpace(TargetPrincipal))
-				throw gcnew System::ArgumentException("Identities parameter must contain SourcePrincipal and TargetPrincipal properties.");
-
-			CloneResult^ result = gcnew CloneResult();
-			result->SourcePrincipal = SourcePrincipal;
-			result->TargetPrincipal = TargetPrincipal;
+			CloneResult^ result = gcnew CloneResult(SourcePrincipal, TargetPrincipal);
 			try
 			{
-
 				CloneSid(SourcePrincipal, TargetPrincipal);
-				result->Result = ResultType::OK;
 			}
 			catch (Exception^ ex)
 			{

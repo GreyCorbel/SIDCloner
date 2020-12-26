@@ -44,7 +44,7 @@ Command uses explicit credentials to authorize the operation, if provided, or id
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>SourceDomain</maml:name>
           <maml:Description>
-            <maml:para>DNS name of domain hosting SourcePrincipal</maml:para>
+            <maml:para>DNS name of AD domain hosting SourcePrincipal</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -56,7 +56,7 @@ Command uses explicit credentials to authorize the operation, if provided, or id
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>TargetDomain</maml:name>
           <maml:Description>
-            <maml:para>DNS name of domain hosting TargetPrincipal</maml:para>
+            <maml:para>DNS name of AD domain hosting TargetPrincipal</maml:para>
           </maml:Description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -143,7 +143,7 @@ Command uses explicit credentials to authorize the operation, if provided, or id
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>SourceDomain</maml:name>
         <maml:Description>
-          <maml:para>DNS name of domain hosting SourcePrincipal</maml:para>
+          <maml:para>DNS name of AD domain hosting SourcePrincipal</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -191,7 +191,7 @@ Command uses explicit credentials to authorize the operation, if provided, or id
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>TargetDomain</maml:name>
         <maml:Description>
-          <maml:para>DNS name of domain hosting TargetPrincipal</maml:para>
+          <maml:para>DNS name of AD domain hosting TargetPrincipal</maml:para>
         </maml:Description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -249,8 +249,7 @@ Command uses explicit credentials to authorize the operation, if provided, or id
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; 
-$sourceCred=Get-Credential
+        <dev:code>$sourceCred=Get-Credential
 $targetCred=Get-Credential
 
 Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred</dev:code>

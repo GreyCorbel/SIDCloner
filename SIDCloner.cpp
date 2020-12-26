@@ -119,17 +119,17 @@ namespace GreyCorbel {
 	/// </summary>
 	/// <param name="sourceIdentity">sAMAccountName of principal from source domain - source of the SID</param>
 	/// <param name="targetIdentity">sAMAccountName of principal from target domain - receiver of the SID</param>
-	void SidCloner::CloneSid(String^ sourcePrincipal, String^ targetPrincipal)
+	void SidCloner::CloneSid(String^ SourcePrincipal, String^ TargetPrincipal)
 	{
 		if (!m_initialized)
 			throw gcnew System::InvalidOperationException("You must call Initialize() first");
 
-		if (String::IsNullOrWhiteSpace(sourcePrincipal) || String::IsNullOrWhiteSpace(targetPrincipal))
-			throw gcnew System::ArgumentException("SourcePrincipal and TargetPrincipal must not be empty");
+		if (String::IsNullOrWhiteSpace(SourcePrincipal) || String::IsNullOrWhiteSpace(TargetPrincipal))
+			throw gcnew System::ArgumentException("SourcePrincipal and TargetPrincipal must not be empty or whitespace only");
 
 
-		pin_ptr<const wchar_t> pSourceIdentity = PtrToStringChars(sourcePrincipal);
-		pin_ptr<const wchar_t> pTargetIdentity = PtrToStringChars(targetPrincipal);
+		pin_ptr<const wchar_t> pSourceIdentity = PtrToStringChars(SourcePrincipal);
+		pin_ptr<const wchar_t> pTargetIdentity = PtrToStringChars(TargetPrincipal);
 
 		HANDLE targetDSHandle = marshal_as<HANDLE>(m_TargetDsHandle);
 		RPC_AUTH_IDENTITY_HANDLE sourceAuthHandle = marshal_as<RPC_AUTH_IDENTITY_HANDLE>(m_sourceAuthHandle);

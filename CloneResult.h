@@ -16,6 +16,13 @@ namespace GreyCorbel
 		property String^ TargetPrincipal;
 		property ResultType Result;
 		property Exception^ ErrorDetail;
+
+		CloneResult(String^ sourcePrincipal, String^ tergetPrincipal)
+		{
+			SourcePrincipal = sourcePrincipal;
+			TargetPrincipal = TargetPrincipal;
+			Result = ResultType::OK;
+		}
 	};
 }
 
