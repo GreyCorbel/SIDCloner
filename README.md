@@ -18,4 +18,4 @@ $targetCred=Get-Credential
 Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain domain2.com -SourceCredential $sourceCred -TargetCredential $targetCred
 ```
 
-Assembly can also be used directly - provided static and instance methods for SID cloning.
+Assembly can also be used directly - it provides static and instance methods for SID cloning.
