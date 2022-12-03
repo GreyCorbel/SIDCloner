@@ -3,7 +3,7 @@ Demonstrates how to populate SID History on security principals migrated cross A
 
 Module is available on [PowerShell Gallery](https://www.powershellgallery.com/packages/SidCloner).
 As the code is developed in C++, installation of [Visual C++ Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) is required for its use (C++/CLI projects cannot be compiled to statically link with C++ runtime).
-Module is available for amd64 platform only - I did not see any strong need for other HW platofrms. Let me know if you need it for diferent platform.
+Module is available for amd64 platform only - I did not see any strong need for other HW platofrms. Let me know if you need it for different platform.
 
 We routinely use this library in our migration projects as it can be easily integrated into PowerShell migration scripts and other toolset we develop and deliver to customers as a part of migration projects.
 
