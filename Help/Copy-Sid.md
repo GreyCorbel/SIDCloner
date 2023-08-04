@@ -19,7 +19,7 @@ Copy-Sid [-SourcePrincipal] <String> [-TargetPrincipal] <String> [-SourceDomain]
 
 ## DESCRIPTION
 Command copies SID from SourcePrincipal in SourceDomain to SID History of TargetPrincipal in TargetDomain.  
-Command uses explicit domain controllers in Source or Target domain, or discovers suiteble Domain Controllers itself, if not specified.  
+Command uses explicit domain controllers in Source or Target domain, or discovers suitable Domain Controllers itself, if not specified.  
 Command uses explicit credentials to authorize the operation, if provided, or identity of caller, if explicit credentials not provided.
 
 ## EXAMPLES
