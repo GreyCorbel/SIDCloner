@@ -1,5 +1,5 @@
 # SIDCloner
-Module demonstrates how to populate SID History on security principals migrated cross AD forest via standard Windows APU [DsAddSidHistory](https://learn.microsoft.com/en-us/windows/win32/api/ntdsapi/nf-ntdsapi-dsaddsidhistoryw)
+Module demonstrates how to populate SID History on security principals migrated cross AD forest via standard Windows API [DsAddSidHistory](https://learn.microsoft.com/en-us/windows/win32/api/ntdsapi/nf-ntdsapi-dsaddsidhistoryw)
 
 ## Overview
 Module is available on [PowerShell Gallery](https://www.powershellgallery.com/packages/SidCloner).
