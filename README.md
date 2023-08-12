@@ -24,6 +24,7 @@ Import-Csv .\inputFile.csv | Copy-Sid -SourceDomain domain1.com -TargetDomain do
 
 Assembly can also be used directly - provides static and instance methods for SID cloning.
 ## Typical errors
+Typical errors you may bump into and solutions are listed below.
 ### Inappropriate authentication
 This error may occur when yoz pass credentials for source and target forest as `<NetBIOSDomainName>\<userSamAccountName>`.  
 Use userPrincipalName format to avoid it.
