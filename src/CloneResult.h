@@ -17,10 +17,10 @@ namespace GreyCorbel
 		property ResultType Result;
 		property Exception^ ErrorDetail;
 
-		CloneResult(String^ sourcePrincipal, String^ tergetPrincipal)
+		CloneResult(String^ sourcePrincipal, String^ targetPrincipal)
 		{
 			SourcePrincipal = sourcePrincipal;
-			TargetPrincipal = TargetPrincipal;
+			TargetPrincipal = targetPrincipal;
 			Result = ResultType::OK;
 		}
 	};

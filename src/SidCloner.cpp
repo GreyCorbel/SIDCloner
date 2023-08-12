@@ -75,16 +75,16 @@ namespace GreyCorbel {
 
 		ReleaseUnmanagedResources();
 
-		marshal_context^ ctx = gcnew marshal_context();
+		m_marshal_ctx = gcnew marshal_context();
 
-		m_SourceDomain = ctx->marshal_as<const wchar_t*>(sourceDomain);
-		m_TargetDomain = ctx->marshal_as<const wchar_t*>(targetDomain);
+		m_SourceDomain = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDomain);
+		m_TargetDomain = m_marshal_ctx->marshal_as<const wchar_t*>(targetDomain);
 
 		if (!String::IsNullOrEmpty(sourceDC))
-			m_SourceDc = ctx->marshal_as<const wchar_t*>(sourceDC);
+			m_SourceDc = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDC);
 
 		if (!String::IsNullOrEmpty(targetDC))
-			m_TargetDc = ctx->marshal_as<const wchar_t*>(targetDC);
+			m_TargetDc = m_marshal_ctx->marshal_as<const wchar_t*>(targetDC);
 
 		if (nullptr != sourceCredential)
 		{
@@ -134,7 +134,7 @@ namespace GreyCorbel {
 		HANDLE targetDSHandle = marshal_as<HANDLE>(m_TargetDsHandle);
 		RPC_AUTH_IDENTITY_HANDLE sourceAuthHandle = marshal_as<RPC_AUTH_IDENTITY_HANDLE>(m_sourceAuthHandle);
 
-		DWORD dwRslt = DsAddSidHistory(targetDSHandle, NULL, m_SourceDomain, pSourceIdentity, m_SourceDc, sourceAuthHandle, m_TargetDomain, pTargetIdentity);
+		DWORD dwRslt = DsAddSidHistoryW(targetDSHandle, NULL, m_SourceDomain, pSourceIdentity, m_SourceDc, sourceAuthHandle, m_TargetDomain, pTargetIdentity);
 		if (dwRslt != ERROR_SUCCESS)
 			throw gcnew System::ComponentModel::Win32Exception(dwRslt);
 	}

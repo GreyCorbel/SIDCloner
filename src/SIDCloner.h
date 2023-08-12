@@ -143,6 +143,8 @@ namespace GreyCorbel {
 		const wchar_t *m_TargetDomain = nullptr;
 		const wchar_t *m_TargetDc = nullptr;
 
+		marshal_context^ m_marshal_ctx = nullptr;
+
 		IntPtr m_sourceAuthHandle = IntPtr::Zero;
 		IntPtr m_targetAuthHandle = IntPtr::Zero;
 		IntPtr m_TargetDsHandle = IntPtr::Zero;
