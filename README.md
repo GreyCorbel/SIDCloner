@@ -26,8 +26,8 @@ Assembly can also be used directly - provides static and instance methods for SI
 ## Typical errors
 Typical errors you may bump into and solutions are listed below.
 ### Inappropriate authentication
-This error may occur when yoz pass credentials for source and target forest as `<NetBIOSDomainName>\<userSamAccountName>`.  
-Use userPrincipalName format to avoid it.
+This error may occur when you pass credentials for source and target forest as `<NetBIOSDomainName>\<userSamAccountName>`.  
+Use userPrincipalName format of user name in credential to avoid it.
 ### Auditing must be enabled in source domain
 This error occurs when auditing is not properly configured. Typical case is configuration of Account Management in classic audit of GPO: Computer policy - Security settings - Local policies - Audit policy, but not in Computer policy - Security settings - Advanced Audit policy configuration.  
-Make sure that ``Success`` and ``Failure`` audit is enabled in both places
+Make sure that `Success` and `Failure` audit is enabled in both places
