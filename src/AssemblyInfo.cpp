@@ -16,7 +16,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("GreyCorbel Solutions")];
 [assembly:AssemblyProductAttribute("SIDCloner")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c)  2016 - 2020 Jiri Formacek, GreyCorbel Solutions")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c)  2016 - 2023 Jiri Formacek, GreyCorbel Solutions")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
@@ -31,7 +31,7 @@ using namespace System::Security::Permissions;
 // You can specify all the value or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
-[assembly:AssemblyVersionAttribute("2.1.0.*")];
+[assembly:AssemblyVersionAttribute("2.1.1.*")];
 
 [assembly:ComVisible(false)];
 
