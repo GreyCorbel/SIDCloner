@@ -16,8 +16,8 @@ namespace GreyCorbel {
 			pSourcePwdPtr=System::Runtime::InteropServices::Marshal::SecureStringToGlobalAllocUnicode(sourcePassword);
 			CloneSid(sourceIdentity, sourceDomain, sourceDC, su, sd, (const wchar_t*)(pSourcePwdPtr.ToPointer()), targetIdentity, targetDomain, nullptr, nullptr, nullptr, (const wchar_t*)nullptr);
 		}
-		catch(Exception^ e) {
-			throw e;
+		catch(Exception^) {
+			throw;
 		}
 		finally {
 			if(pSourcePwdPtr!=IntPtr::Zero)
@@ -49,8 +49,8 @@ namespace GreyCorbel {
 			pTargetPwdPtr=System::Runtime::InteropServices::Marshal::SecureStringToGlobalAllocUnicode(targetPassword);
 			CloneSid(sourceIdentity, sourceDomain, sourceDC, su, sd, (const wchar_t*)(pSourcePwdPtr.ToPointer()), targetIdentity, targetDomain, targetDC, tu, td,  (const wchar_t*)(pTargetPwdPtr.ToPointer()));
 		}
-		catch(Exception^ e) {
-			throw e;
+		catch(Exception^) {
+			throw;
 		}
 		finally {
 			if(pSourcePwdPtr!=IntPtr::Zero)
@@ -113,8 +113,8 @@ namespace GreyCorbel {
 
 			dwRslt=DsAddSidHistory(targetDsHandle,NULL,pSourceDomain,pSourceIdentity,pSourceDC,sourceAuthHandle,pTargetDomain,pTargetIdentity);
 		}
-		catch(Exception^ e) {
-			throw e;
+		catch(Exception^) {
+			throw;
 		}
 		finally {
 			if(targetDsHandle != NULL)

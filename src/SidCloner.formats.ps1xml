@@ -17,6 +17,9 @@
           <TableColumnHeader>
             <Width>10</Width>
           </TableColumnHeader>
+          <TableColumnHeader>
+            <Width>32</Width>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -30,7 +33,9 @@
               <TableColumnItem>
                 <PropertyName>Result</PropertyName>
               </TableColumnItem>
-
+              <TableColumnItem>
+                <ScriptBlock>$_.ErrorDetail.Message</ScriptBlock>
+              </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
