@@ -175,6 +175,7 @@ namespace GreyCorbel {
 			m_SourceDc = nullptr;
 			m_SourceDomain = nullptr;
 			m_TargetDomain = nullptr;
+			m_marshal_ctx = nullptr;
 
 			m_initialized = false;
 		}

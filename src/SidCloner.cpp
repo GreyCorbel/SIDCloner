@@ -70,48 +70,56 @@ namespace GreyCorbel {
 		PSCredential^ sourceCredential, 
 		PSCredential^ targetCredential)
 	{
-		if (String::IsNullOrEmpty(sourceDomain) || String::IsNullOrEmpty(targetDomain))
-			throw gcnew System::ArgumentException("You must provide source and target domain");
+		if (String::IsNullOrWhiteSpace(sourceDomain) || String::IsNullOrWhiteSpace(targetDomain))
+			throw gcnew System::ArgumentException("SourceDomain and TargetDomain must not be empty or whitespace only");
 
 		ReleaseUnmanagedResources();
 
-		m_marshal_ctx = gcnew marshal_context();
-
-		m_SourceDomain = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDomain);
-		m_TargetDomain = m_marshal_ctx->marshal_as<const wchar_t*>(targetDomain);
-
-		if (!String::IsNullOrEmpty(sourceDC))
-			m_SourceDc = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDC);
-
-		if (!String::IsNullOrEmpty(targetDC))
-			m_TargetDc = m_marshal_ctx->marshal_as<const wchar_t*>(targetDC);
-
-		if (nullptr != sourceCredential)
+		try
 		{
-			RPC_AUTH_IDENTITY_HANDLE h = NULL;
-			auto cred = sourceCredential->GetNetworkCredential();
-			CredentialHelper::NormalizeCredential(cred, sourceDomain);
-			DsHelper::GetRpcCredentials(cred, &h);
-			m_sourceAuthHandle = marshal_as<IntPtr>(h);
-		}
+			m_marshal_ctx = gcnew marshal_context();
 
-		HANDLE targetDsHandle = NULL;
-		if (nullptr != targetCredential)
-		{
-			RPC_AUTH_IDENTITY_HANDLE h = NULL;
-			auto cred = targetCredential->GetNetworkCredential();
-			CredentialHelper::NormalizeCredential(cred, targetDomain);
-			DsHelper::GetRpcCredentials(cred, &h);
-			m_targetAuthHandle = marshal_as<IntPtr>(h);
-			DsHelper::GetDSHandle(m_TargetDomain, m_TargetDc, h, &targetDsHandle);
-		}
-		else
-		{
-			DsHelper::GetDSHandle(m_TargetDomain, m_TargetDc, NULL, &targetDsHandle);
-		}
-		m_TargetDsHandle = marshal_as<IntPtr>(targetDsHandle);
+			m_SourceDomain = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDomain);
+			m_TargetDomain = m_marshal_ctx->marshal_as<const wchar_t*>(targetDomain);
 
-		m_initialized = true;
+			if (!String::IsNullOrEmpty(sourceDC))
+				m_SourceDc = m_marshal_ctx->marshal_as<const wchar_t*>(sourceDC);
+
+			if (!String::IsNullOrEmpty(targetDC))
+				m_TargetDc = m_marshal_ctx->marshal_as<const wchar_t*>(targetDC);
+
+			if (nullptr != sourceCredential)
+			{
+				RPC_AUTH_IDENTITY_HANDLE h = NULL;
+				auto cred = sourceCredential->GetNetworkCredential();
+				CredentialHelper::NormalizeCredential(cred, sourceDomain);
+				DsHelper::GetRpcCredentials(cred, &h);
+				m_sourceAuthHandle = marshal_as<IntPtr>(h);
+			}
+
+			HANDLE targetDsHandle = NULL;
+			if (nullptr != targetCredential)
+			{
+				RPC_AUTH_IDENTITY_HANDLE h = NULL;
+				auto cred = targetCredential->GetNetworkCredential();
+				CredentialHelper::NormalizeCredential(cred, targetDomain);
+				DsHelper::GetRpcCredentials(cred, &h);
+				m_targetAuthHandle = marshal_as<IntPtr>(h);
+				DsHelper::GetDSHandle(m_TargetDomain, m_TargetDc, h, &targetDsHandle);
+			}
+			else
+			{
+				DsHelper::GetDSHandle(m_TargetDomain, m_TargetDc, NULL, &targetDsHandle);
+			}
+			m_TargetDsHandle = marshal_as<IntPtr>(targetDsHandle);
+
+			m_initialized = true;
+		}
+		catch (Exception^)
+		{
+			ReleaseUnmanagedResources();
+			throw;
+		}
 	}
 
 	/// <summary>

@@ -16,9 +16,6 @@ namespace GreyCorbel {
 			pSourcePwdPtr=System::Runtime::InteropServices::Marshal::SecureStringToGlobalAllocUnicode(sourcePassword);
 			CloneSid(sourceIdentity, sourceDomain, sourceDC, su, sd, (const wchar_t*)(pSourcePwdPtr.ToPointer()), targetIdentity, targetDomain, nullptr, nullptr, nullptr, (const wchar_t*)nullptr);
 		}
-		catch(Exception^) {
-			throw;
-		}
 		finally {
 			if(pSourcePwdPtr!=IntPtr::Zero)
 				System::Runtime::InteropServices::Marshal::ZeroFreeGlobalAllocUnicode(pSourcePwdPtr);
@@ -49,9 +46,6 @@ namespace GreyCorbel {
 			pTargetPwdPtr=System::Runtime::InteropServices::Marshal::SecureStringToGlobalAllocUnicode(targetPassword);
 			CloneSid(sourceIdentity, sourceDomain, sourceDC, su, sd, (const wchar_t*)(pSourcePwdPtr.ToPointer()), targetIdentity, targetDomain, targetDC, tu, td,  (const wchar_t*)(pTargetPwdPtr.ToPointer()));
 		}
-		catch(Exception^) {
-			throw;
-		}
 		finally {
 			if(pSourcePwdPtr!=IntPtr::Zero)
 				System::Runtime::InteropServices::Marshal::ZeroFreeGlobalAllocUnicode(pSourcePwdPtr);
@@ -74,8 +68,8 @@ namespace GreyCorbel {
 		String^ targetUserDomain, 
 		const wchar_t* pTargetPassword)
 	{
-		if(String::IsNullOrEmpty(sourceIdentity) || String::IsNullOrEmpty(sourceDomain) || String::IsNullOrEmpty(targetIdentity) || String::IsNullOrEmpty(targetDomain))
-			throw gcnew System::ArgumentException("You must provide source and target identity, and source and target domain");
+		if(String::IsNullOrWhiteSpace(sourceIdentity) || String::IsNullOrWhiteSpace(sourceDomain) || String::IsNullOrWhiteSpace(targetIdentity) || String::IsNullOrWhiteSpace(targetDomain))
+			throw gcnew System::ArgumentException("SourceIdentity, SourceDomain, TargetIdentity, and TargetDomain must not be empty or whitespace only");
 		
 		pin_ptr<const wchar_t> pSourceIdentity=PtrToStringChars(sourceIdentity);
 		pin_ptr<const wchar_t> pSourceDomain=PtrToStringChars(sourceDomain);
@@ -112,9 +106,6 @@ namespace GreyCorbel {
 			DsHelper::GetDSHandle(pTargetDomain, pTargetDC, targetAuthHandle,&targetDsHandle);
 
 			dwRslt=DsAddSidHistory(targetDsHandle,NULL,pSourceDomain,pSourceIdentity,pSourceDC,sourceAuthHandle,pTargetDomain,pTargetIdentity);
-		}
-		catch(Exception^) {
-			throw;
 		}
 		finally {
 			if(targetDsHandle != NULL)
