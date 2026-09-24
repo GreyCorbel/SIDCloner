@@ -8,6 +8,25 @@ The module is available on the [PowerShell Gallery](https://www.powershellgaller
 
 SID history preserves access to resources that still have ACLs containing SIDs from the source forest. Adding SID history is a privileged migration operation: validate each source-to-target mapping, protect the output records, and remove SID history only according to your migration and security-retention plan.
 
+## Releases
+
+Pushing a tag matching `vMAJOR.MINOR.PATCH` runs the GitHub Actions release workflow. It builds the x64 release binary, composes the PowerShell module, signs the DLL with Azure Artifact Signing, and publishes the module to the PowerShell Gallery.
+
+The workflow uses GitHub OIDC through the `release` environment. Configure the environment in the repository settings and add a federated credential to the Azure app registration:
+
+```bash
+az ad app federated-credential create \
+  --id "$TENANTINTEGRATION_CLIENTID" \
+  --parameters '{
+    "name": "github-sidcloner-release",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:GreyCorbel/SIDCloner:environment:release",
+    "audiences": ["api://AzureADTokenExchange"]
+  }'
+```
+
+Grant that app registration the **Artifact Signing Certificate Profile Signer** role on the `greycorbel` signing account. The repository also needs the `GC_PSGALLERY_APIKEY` secret; `TENANTINTEGRATION_CLIENTID` and `TENANTINTEGRATION_TENANTID` are read as organization variables.
+
 ## Prerequisites
 
 Before running `Copy-Sid`, verify the requirements in [Using DsAddSidHistory](https://learn.microsoft.com/en-us/windows/win32/ad/using-dsaddsidhistory):
