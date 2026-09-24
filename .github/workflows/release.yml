@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,12 +31,23 @@ jobs:
       - name: Set release version
         shell: pwsh
         run: |
-          $tag = $env:GITHUB_REF_NAME
-          if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)$') {
-            throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH."
+          if ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch') {
+            $manifestPath = Join-Path $env:GITHUB_WORKSPACE "$env:MODULE_PATH/SidCloner.psd1"
+            $manifest = Get-Content -Raw -Encoding Unicode $manifestPath
+            if ($manifest -notmatch "(?m)^ModuleVersion\s*=\s*'(?<version>[^']+)'") {
+              throw 'Unable to determine the current module version for a manual run.'
+            }
+            $version = $Matches.version
+            Write-Host "Manual run detected; using existing module version '$version' (gallery publishing will be skipped)."
+          }
+          else {
+            $tag = $env:GITHUB_REF_NAME
+            if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)$') {
+              throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH."
+            }
+            $version = $Matches.version
           }
 
-          $version = $Matches.version
           "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
 
           $manifestPath = Join-Path $env:GITHUB_WORKSPACE "$env:MODULE_PATH/SidCloner.psd1"
@@ -103,6 +115,7 @@ jobs:
           timestamp-digest: SHA256
 
       - name: Publish module to PowerShell Gallery
+        if: github.event_name != 'workflow_dispatch'
         shell: pwsh
         env:
           PSGALLERY_API_KEY: ${{ secrets.GC_PSGALLERY_APIKEY }}
