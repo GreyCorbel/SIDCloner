@@ -30,7 +30,7 @@ jobs:
       - name: Set release version
         shell: pwsh
         run: |
-          $tag = '${{ github.ref_name }}'
+          $tag = $env:GITHUB_REF_NAME
           if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)$') {
             throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH."
           }
