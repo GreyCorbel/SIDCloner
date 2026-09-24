@@ -31,6 +31,8 @@ jobs:
       - name: Set release version
         shell: pwsh
         run: |
+          $prerelease = ''
+
           if ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch') {
             $manifestPath = Join-Path $env:GITHUB_WORKSPACE "$env:MODULE_PATH/SidCloner.psd1"
             $manifest = Get-Content -Raw -Encoding Unicode $manifestPath
@@ -38,14 +40,18 @@ jobs:
               throw 'Unable to determine the current module version for a manual run.'
             }
             $version = $Matches.version
+            if ($manifest -match "(?m)^\s*Prerelease\s*=\s*'(?<prerelease>[^']+)'") {
+              $prerelease = $Matches.prerelease
+            }
             Write-Host "Manual run detected; using existing module version '$version' (gallery publishing will be skipped)."
           }
           else {
             $tag = $env:GITHUB_REF_NAME
-            if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)$') {
-              throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH."
+            if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)(-(?<prerelease>[0-9A-Za-z.-]+))?$') {
+              throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-PRERELEASE."
             }
             $version = $Matches.version
+            $prerelease = $Matches.prerelease
           }
 
           "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
@@ -53,6 +59,7 @@ jobs:
           $manifestPath = Join-Path $env:GITHUB_WORKSPACE "$env:MODULE_PATH/SidCloner.psd1"
           $manifest = Get-Content -Raw -Encoding Unicode $manifestPath
           $manifest = $manifest -replace "(?m)^ModuleVersion\s*=\s*'[^']+'", "ModuleVersion = '$version'"
+          $manifest = $manifest -replace "(?m)^(\s*)Prerelease\s*=\s*'[^']*'", "`${1}Prerelease = '$prerelease'"
           [System.IO.File]::WriteAllText(
             $manifestPath,
             $manifest,
