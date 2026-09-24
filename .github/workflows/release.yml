@@ -1,0 +1,118 @@
+name: Release PowerShell module
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release:
+    name: Build, sign, and publish
+    runs-on: windows-2022
+    environment: release
+
+    env:
+      MODULE_PATH: module/SidCloner
+      AZURE_TENANT_ID: ${{ vars.TENANTINTEGRATION_TENANTID }}
+      AZURE_CLIENT_ID: ${{ vars.TENANTINTEGRATION_CLIENTID }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set release version
+        shell: pwsh
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          if ($tag -notmatch '^v(?<version>\d+\.\d+\.\d+)$') {
+            throw "Release tag '$tag' must have the form vMAJOR.MINOR.PATCH."
+          }
+
+          $version = $Matches.version
+          "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
+
+          $manifestPath = Join-Path $env:GITHUB_WORKSPACE "$env:MODULE_PATH/SidCloner.psd1"
+          $manifest = Get-Content -Raw -Encoding Unicode $manifestPath
+          $manifest = $manifest -replace "(?m)^ModuleVersion\s*=\s*'[^']+'", "ModuleVersion = '$version'"
+          [System.IO.File]::WriteAllText(
+            $manifestPath,
+            $manifest,
+            [System.Text.UnicodeEncoding]::new($false, $true)
+          )
+
+          $assemblyPath = Join-Path $env:GITHUB_WORKSPACE 'src/SIDCloner/AssemblyInfo.cpp'
+          $assembly = Get-Content -Raw -Encoding UTF8 $assemblyPath
+          $assembly = $assembly -replace '(?m)(AssemblyVersionAttribute\(")[^"]+("\))', "`${1}$version.0`${2}"
+          [System.IO.File]::WriteAllText(
+            $assemblyPath,
+            $assembly,
+            [System.Text.UTF8Encoding]::new($true)
+          )
+
+      - name: Build x64 release binary
+        shell: pwsh
+        run: |
+          msbuild src/SIDCloner/SIDCloner.sln `
+            /m `
+            /t:Rebuild `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            /p:WarningLevel=0
+
+      - name: Compose PowerShell module
+        shell: pwsh
+        run: |
+          $modulePath = Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH
+          $buildPath = Join-Path $env:GITHUB_WORKSPACE 'src/SIDCloner/x64/Release'
+
+          New-Item -ItemType Directory -Force (Join-Path $modulePath 'en-us') | Out-Null
+          Copy-Item (Join-Path $buildPath 'SIDCloner.dll') $modulePath -Force
+          if (Test-Path (Join-Path $buildPath 'SIDCloner.xml')) {
+            Copy-Item (Join-Path $buildPath 'SIDCloner.xml') $modulePath -Force
+          }
+
+          if (-not (Test-Path (Join-Path $modulePath 'SidCloner.dll'))) {
+            throw 'The release DLL was not produced.'
+          }
+
+      - name: Log in to Azure with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Sign module binaries with Artifact Signing
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: https://weu.codesigning.azure.net
+          signing-account-name: greycorbel
+          certificate-profile-name: greycorbel-signing
+          files-folder: ${{ github.workspace }}\module\SidCloner
+          files-folder-filter: dll,exe,psm1,ps1xml
+          files-folder-recurse: true
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Publish module to PowerShell Gallery
+        shell: pwsh
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.GC_PSGALLERY_APIKEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:PSGALLERY_API_KEY)) {
+            throw 'The GC_PSGALLERY_APIKEY secret is not configured.'
+          }
+
+          Publish-Module `
+            -Path (Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH) `
+            -Repository PSGallery `
+            -NuGetApiKey $env:PSGALLERY_API_KEY `
+            -Verbose
